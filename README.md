@@ -1,0 +1,15 @@
+# springboot+restful的crud+ip过滤器的实现
+ - springboot不多说了，持久层实现通过mybatis实现，通过springdata jpa自动建表ddl-auto为update
+ - mysql这里有一个坑，8.0和5.1.x版本的密码验证方式不同，要改一下mysql-connection-java版本
+ - mybatis在dao层利用注解模式开发。。。通过@Mapper开启
+ - restful风格不多解释了。。
+ - ip过滤器的实现
+    - @PropertySource获取到数据源properties的位置，为classpath @ConfigurationProperties获取到标签的前缀 @Value拿到数据 
+    - 0:0:0:0:0:0:0:1 为ipv6的localhost,request.getHeader() "X-Forwarded-For"获取到ip地址
+    - Springboot中会使用FilterRegistrationBean来注册Filter,设置过滤uri
+    - registrationBean.addInitParameter(“paramName”, “value”);,这是用来初始化filter的参数的,这里添加后可以在Filter中取得,filterConfig.getInitParameter(“paramName”);
+    - registrationBean.setOrder() 设置优先级 1为最高级
+    - 自定义filter实现filter接口 重写init() destroy() dofilter()方法
+    - 通过获取的ip和白名单ip比对如果相同就通过。。
+ - ObjectMapper类是Jackson库的主要类，它提供一些功能将Java对象转换成JSON结构，反之亦然
+ - 通过构造ObjectMapper把HashMap转化为String response.getWrite().write(返回前台)
